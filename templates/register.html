@@ -1,10 +1,70 @@
 {% extends 'base.html' %}
-{% block title %}Register{% endblock %}
+{% block title %}Register - E-Shop{% endblock %}
+
 {% block content %}
-<h2>Register</h2>
-<form method="POST">
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .register-wrapper {
+    min-height: calc(100vh - 56px); /* Full screen minus navbar height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .register-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .register-card h2 {
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 700;
+    color: #0d6efd;
+  }
+
+  .register-card input[type="email"],
+  .register-card input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  .register-card input[type="submit"] {
+    width: 100%;
+    background-color: #ffc107;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #212529;
+    cursor: pointer;
+  }
+
+  .register-card input[type="submit"]:hover {
+    background-color: #e0a800;
+    transition: 0.3s ease;
+  }
+</style>
+
+<div class="register-wrapper">
+  <form method="POST" class="register-card">
+    <h2>Create Your Account</h2>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
     <input type="submit" value="Register">
-</form>
+  </form>
+</div>
 {% endblock %}

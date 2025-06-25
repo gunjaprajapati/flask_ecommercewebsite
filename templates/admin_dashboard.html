@@ -1,6 +1,31 @@
 {% extends 'base.html' %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block content %}
-<h2>Welcome Admin: {{ current_user.email }}</h2>
-<p>You have full access.</p>
+<h2>Admin Dashboard</h2>
+<a href="{{ url_for('add_product') }}" class="btn btn-success mb-3">Add Product</a>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td>{{ product.name }}</td>
+      <td>{{ product.description }}</td>
+      <td>₹{{ product.price }}</td>
+      <td>
+        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-warning btn-sm">Edit</a>
+        <a href="{{ url_for('delete_product', product_id=product.id) }}" class="btn btn-danger btn-sm">Delete</a>
+        <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-info btn-sm">View</a>
+
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

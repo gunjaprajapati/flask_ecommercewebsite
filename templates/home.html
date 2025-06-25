@@ -1,5 +1,60 @@
 {% extends 'base.html' %}
-{% block title %}Home{% endblock %}
+{% block title %}Home - E-Shop{% endblock %}
+
 {% block content %}
-<h2>Welcome {{ current_user.email if current_user.is_authenticated else 'Guest' }}!</h2>
+<style>
+  .home-hero {
+    min-height: calc(100vh - 56px); /* Full screen minus navbar height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .home-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .home-hero span {
+    color: #0d6efd;
+  }
+
+  .home-hero p {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+
+  .home-hero .btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+  }
+
+  .btn-warning:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+  }
+</style>
+
+<div class="home-hero">
+  <div>
+    <h1>Welcome to <span>E-Shop</span>!</h1>
+    <p>
+      Discover quality products, amazing deals, and fast delivery – all in one place. 
+      Trusted by hundreds of happy customers.
+    </p>
+    <a href="{{ url_for('view_products') }}" class="btn btn-warning btn-lg shadow">
+      View Products
+    </a>
+  </div>
+</div>
 {% endblock %}

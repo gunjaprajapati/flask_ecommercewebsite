@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+
+{% block content %}
+<style>
+  .form-section {
+    background-color: #f8f9fa;
+    padding: 40px 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 30px auto;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .form-section h2 {
+    text-align: center;
+    color: #0d6efd;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #343a40;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 5px;
+  }
+
+  .btn-primary:hover {
+    background-color: #0b5ed7;
+  }
+</style>
+
+<div class="form-section">
+  <h2>Add New Product</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label class="form-label">Product Name</label>
+      <input type="text" name="name" class="form-control" placeholder="Enter product name" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea name="description" class="form-control" placeholder="Enter product description" rows="4" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Price (₹)</label>
+      <input type="number" name="price" step="1" min="1" class="form-control" placeholder="Enter price" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Product Image</label>
+      <input type="file" name="image" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Product</button>
+  </form>
+</div>
+{% endblock %}
