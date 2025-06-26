@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'gunja_prajapati_secret'
 
-# PostgreSQL URI from environment OR fallback to SQLite for local dev
+# PostgreSQL for production or SQLite fallback for development
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") or \
     'sqlite:///' + os.path.join(basedir, 'ecommerce.db')
@@ -16,7 +16,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") or \
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB max upload
 
-# Create upload folder if it doesn't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -66,7 +65,11 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             flash('Login successful!')
-            return redirect(url_for('admin_dashboard') if user.role == 'admin' else 'home')
+            print(f"User {user.email} logged in with role: {user.role}")
+            if user.role == 'admin':
+                return redirect(url_for('admin_dashboard'))
+            else:
+                return redirect(url_for('home'))
         else:
             flash('Invalid credentials. Try again.')
     return render_template('login.html')
@@ -96,7 +99,7 @@ def add_product():
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
-        price = float(request.form['price'])  # Use float
+        price = float(request.form['price'])
         image_file = request.files.get('image')
         filename = None
 
