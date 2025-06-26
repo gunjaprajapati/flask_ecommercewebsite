@@ -192,11 +192,7 @@ def product_detail(product_id):
         form=form
     )
 
-@app.route('/create_tables')
-def create_tables():
-    from models import db
-    db.create_all()
-    return "Tables created!"
+
 
 @app.route('/create_admin')
 def create_admin():
@@ -213,6 +209,12 @@ def create_admin():
     db.session.add(new_admin)
     db.session.commit()
     return "Admin user created!"
+
+@app.route('/create_tables')
+def create_tables():
+    from models import db
+    db.create_all()
+    return "Tables created!"
 
 
 @app.route('/rate/<int:product_id>', methods=['POST'])
