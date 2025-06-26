@@ -199,27 +199,27 @@ def rate_product(product_id):
 
 
 
-@app.route('/create_tables')
-def create_tables():
-    db.drop_all()
-    db.create_all()
-    return "Tables dropped and recreated!"
+#@app.route('/create_tables')
+#def create_tables():
+#   db.drop_all()
+#  db.create_all()
+# return "Tables dropped and recreated!"
 
-@app.route('/create_admin')
-def create_admin():
-    try:
-        admin_email = "admin@example.com"
-        admin_password = "admin123"
-        existing = User.query.filter_by(email=admin_email).first()
-        if existing:
-            return "Admin already exists!"
-        new_admin = User(email=admin_email, role='admin')
-        new_admin.set_password(admin_password)
-        db.session.add(new_admin)
-        db.session.commit()
-        return "Admin user created!"
-    except Exception as e:
-        return f"Error: {str(e)}"
+#@app.route('/create_admin')
+#def create_admin():
+#    try:
+#       admin_email = "admin@example.com"
+#      admin_password = "admin123"
+#     existing = User.query.filter_by(email=admin_email).first()
+#    if existing:
+#       return "Admin already exists!"
+#  new_admin = User(email=admin_email, role='admin')
+#      new_admin.set_password(admin_password)
+#       db.session.add(new_admin)
+#        db.session.commit()
+#        return "Admin user created!"
+#    except Exception as e:
+#        return f"Error: {str(e)}"
 
 
 if __name__ == '__main__':
