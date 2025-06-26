@@ -198,6 +198,22 @@ def create_tables():
     db.create_all()
     return "Tables created!"
 
+@app.route('/create_admin')
+def create_admin():
+    from models import db, User
+    admin_email = "admin@example.com"
+    admin_password = "admin123"
+
+    existing = User.query.filter_by(email=admin_email).first()
+    if existing:
+        return "Admin already exists!"
+
+    new_admin = User(email=admin_email, role='admin')
+    new_admin.set_password(admin_password)
+    db.session.add(new_admin)
+    db.session.commit()
+    return "Admin user created!"
+
 
 @app.route('/rate/<int:product_id>', methods=['POST'])
 @login_required
