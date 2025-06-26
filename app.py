@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -8,10 +7,17 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'gunja_prajapati_secret'
+
+# PostgreSQL URI from environment OR fallback to SQLite for local dev
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'ecommerce.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") or \
+    'sqlite:///' + os.path.join(basedir, 'ecommerce.db')
+
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB max upload
+
+# Create upload folder if it doesn't exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -60,10 +66,7 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             flash('Login successful!')
-            if user.role == 'admin':
-                return redirect(url_for('admin_dashboard'))
-            else:
-                return redirect(url_for('home'))
+            return redirect(url_for('admin_dashboard') if user.role == 'admin' else 'home')
         else:
             flash('Invalid credentials. Try again.')
     return render_template('login.html')
@@ -93,7 +96,7 @@ def add_product():
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
-        price = int(request.form['price'])
+        price = float(request.form['price'])  # Use float
         image_file = request.files.get('image')
         filename = None
 
@@ -119,7 +122,7 @@ def edit_product(product_id):
     if request.method == 'POST':
         product.name = request.form['name']
         product.description = request.form['description']
-        product.price = int(request.form['price'])
+        product.price = float(request.form['price'])
         image_file = request.files.get('image')
 
         if image_file and allowed_file(image_file.filename):
@@ -166,20 +169,9 @@ def product_detail(product_id):
     form = ReviewForm()
 
     if form.validate_on_submit() and current_user.is_authenticated:
-        review = Review(
-            content=form.content.data,
-            user_id=current_user.id,
-            product_id=product_id
-        )
-        db.session.add(review)
-
-        rating = Rating(
-            stars=form.stars.data,
-            user_id=current_user.id,
-            product_id=product_id
-        )
-        db.session.add(rating)
-
+        review = Review(content=form.content.data, user_id=current_user.id, product_id=product_id)
+        rating = Rating(stars=form.stars.data, user_id=current_user.id, product_id=product_id)
+        db.session.add_all([review, rating])
         db.session.commit()
         flash('Your review and rating have been posted.', 'success')
         return redirect(url_for('product_detail', product_id=product_id))
@@ -192,31 +184,6 @@ def product_detail(product_id):
         form=form
     )
 
-
-
-@app.route('/create_admin')
-def create_admin():
-    from models import db, User
-    admin_email = "admin@example.com"
-    admin_password = "admin123"
-
-    existing = User.query.filter_by(email=admin_email).first()
-    if existing:
-        return "Admin already exists!"
-
-    new_admin = User(email=admin_email, role='admin')
-    new_admin.set_password(admin_password)
-    db.session.add(new_admin)
-    db.session.commit()
-    return "Admin user created!"
-
-@app.route('/create_tables')
-def create_tables():
-    from models import db
-    db.create_all()
-    return "Tables created!"
-
-
 @app.route('/rate/<int:product_id>', methods=['POST'])
 @login_required
 def rate_product(product_id):
@@ -227,7 +194,23 @@ def rate_product(product_id):
     flash('Thank you for rating!')
     return redirect(url_for('product_detail', product_id=product_id))
 
+@app.route('/create_admin')
+def create_admin():
+    admin_email = "admin@example.com"
+    admin_password = "admin123"
+    existing = User.query.filter_by(email=admin_email).first()
+    if existing:
+        return "Admin already exists!"
+    new_admin = User(email=admin_email, role='admin')
+    new_admin.set_password(admin_password)
+    db.session.add(new_admin)
+    db.session.commit()
+    return "Admin user created!"
+
+@app.route('/create_tables')
+def create_tables():
+    db.create_all()
+    return "Tables created!"
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
