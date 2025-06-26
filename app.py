@@ -192,6 +192,13 @@ def product_detail(product_id):
         form=form
     )
 
+@app.route('/create_tables')
+def create_tables():
+    from models import db
+    db.create_all()
+    return "Tables created!"
+
+
 @app.route('/rate/<int:product_id>', methods=['POST'])
 @login_required
 def rate_product(product_id):
