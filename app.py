@@ -212,8 +212,10 @@ def create_admin():
 
 @app.route('/create_tables')
 def create_tables():
+    db.drop_all()
     db.create_all()
-    return "Tables created!"
+    return "Tables dropped and recreated!"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
